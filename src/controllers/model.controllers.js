@@ -1,4 +1,4 @@
-import { checkModel, createModel, getModels } from "../repository/model.repository.js";
+import { checkModel, createModel, getModel, getModels } from "../repository/model.repository.js";
 
 export async function postModel(req, res){
     const {name, picture, description} = req.body
@@ -14,6 +14,7 @@ export async function postModel(req, res){
 }
 
 export async function showModels(req, res){
+    const {user} = req.params
     try{
         const models = await getModels() 
         res.send(models.rows)
@@ -23,8 +24,11 @@ export async function showModels(req, res){
 }
 
 export async function infoModel(req, res){
+    const {id} = req.params
     try{
-        res.send("infoModel")
+        const model = await getModel(id)
+        if(!model.rows[0]) return res.status(404).send({message: "pet não existe"})
+        res.send(model.rows[0])
     } catch (err) {
         res.status(500).send(err.message);
     }

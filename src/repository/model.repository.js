@@ -14,3 +14,7 @@ export function checkModel(name){
 export function getModels(){
     return db.query(`SELECT * FROM models WHERE available='true';`)
 }
+
+export function getModel(id){
+    return db.query(`SELECT * FROM models WHERE id=$1;`, [id])
+}
