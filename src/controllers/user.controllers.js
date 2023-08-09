@@ -63,7 +63,7 @@ export async function updateUser(req, res) {
 
         const update = await setUser(user, name, email, telephone, picture, description)
 
-        res.send("updateUser")
+        res.send("Atualizado")
     } catch (err) {
         res.status(500).send(err.message);
     }
