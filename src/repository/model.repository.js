@@ -18,3 +18,7 @@ export function getModels(){
 export function getModel(id){
     return db.query(`SELECT * FROM models WHERE id=$1;`, [id])
 }
+
+export function getMyModels(user){
+    return db.query(`SELECT * FROM models WHERE "userId"=$1`, [user.id])
+}

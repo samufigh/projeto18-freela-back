@@ -1,4 +1,4 @@
-import { checkModel, createModel, getModel, getModels } from "../repository/model.repository.js";
+import { checkModel, createModel, getModel, getModels, getMyModels } from "../repository/model.repository.js";
 
 export async function postModel(req, res){
     const {name, picture, description} = req.body
@@ -7,14 +7,13 @@ export async function postModel(req, res){
         const existingModel = await checkModel(name)
         if(existingModel.rowCount>0) return res.status(409).send({message: "Você já cadastrou um pet com esse nome!"})
         await createModel(name, picture, description, user)
-        res.send("postModel")
+        res.status(200).send("Seu pet foi adicionado!")
     } catch (err) {
         res.status(500).send(err.message);
     }
 }
 
 export async function showModels(req, res){
-    const {user} = req.params
     try{
         const models = await getModels() 
         res.send(models.rows)
@@ -35,8 +34,10 @@ export async function infoModel(req, res){
 }
 
 export async function showMyModels(req, res){
+    const {user} = res.locals
     try{
-        res.send("showMyModels")
+        const myModels = await getMyModels(user)
+        res.send(myModels.rows)
     } catch (err) {
         res.status(500).send(err.message);
     }
