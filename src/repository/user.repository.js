@@ -25,3 +25,7 @@ export function createSession(user, token){
                 INSERT INTO sessions ("userId", "token") 
                 VALUES ($1, $2);`, [user.rows[0].id, token])
 }
+
+export function getInfoUser(user){
+    return db.query(`SELECT * FROM users WHERE id=$1;`, [user.id])
+}

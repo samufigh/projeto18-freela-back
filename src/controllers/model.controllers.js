@@ -46,7 +46,6 @@ export async function showMyModels(req, res){
 export async function setAvailable(req, res){
     const {id} = req.params
     const {available} = req.body
-    console.log(available)
     try{
         const model = await setModel(id, available)
         res.send("Atualizado")

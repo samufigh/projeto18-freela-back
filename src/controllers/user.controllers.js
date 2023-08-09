@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt"
 import { v4 as uuid } from "uuid"
-import { checkEmail, createSession, deleteSession, getUserByEmail, registerUser } from "../repository/user.repository.js"
+import { checkEmail, createSession, deleteSession, getInfoUser, getUserByEmail, registerUser } from "../repository/user.repository.js"
 
 export async function register(req, res) {
     const { name, cpf, telephone, email, password, confirmPassword } = req.body
@@ -42,8 +42,18 @@ export async function login(req, res) {
 }
 
 export async function infoUser(req, res){
+    const {user} = res.locals
     try{
-        res.send("infoUser")
+        const info = await getInfoUser(user)
+        res.send(info.rows[0])
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+}
+
+export async function updateUser(req, res){
+    try{
+        res.send("updateUser")
     } catch (err) {
         res.status(500).send(err.message);
     }
