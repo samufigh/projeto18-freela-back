@@ -1,6 +1,6 @@
 import { db } from "../database/database.connection.js"
 
-export function checkEmail(email, cpf, telephone){
+export function checkInfo(email, cpf, telephone){
     const result = db.query(`SELECT * FROM users WHERE email=$1 OR cpf=$2 OR telephone=$3;`, [email, cpf, telephone])
     return result
 }
@@ -28,4 +28,19 @@ export function createSession(user, token){
 
 export function getInfoUser(user){
     return db.query(`SELECT * FROM users WHERE id=$1;`, [user.id])
+}
+
+export function setUser(user, name, email, telephone, picture, description){
+    return db.query(`UPDATE users 
+        SET name=$1, email=$2, telephone=$3, picture=$4, description=$5
+        WHERE id=$6;`, [name, email, telephone, picture, description, user.id])
+}
+
+export function checkEmail(email){
+    return db.query(`SELECT email, telephone FROM users WHERE email=$1;`, [email])
+}
+
+
+export function checkPhone(telephone){
+    return db.query(`SELECT telephone, telephone FROM users WHERE telephone=$1;`, [telephone])
 }
