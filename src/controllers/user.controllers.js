@@ -41,9 +41,9 @@ export async function login(req, res) {
     }
 }
 
-export async function infoUser(req, res){
-    const {user} = res.locals
-    try{
+export async function infoUser(req, res) {
+    const { user } = res.locals
+    try {
         const info = await getInfoUser(user)
         res.send(info.rows[0])
     } catch (err) {
@@ -51,18 +51,15 @@ export async function infoUser(req, res){
     }
 }
 
-export async function updateUser(req, res){
-    const {user} = res.locals
-    const {name, email, telephone, picture, description} = req.body
-    try{
+export async function updateUser(req, res) {
+    const { user } = res.locals
+    const { name, email, telephone, picture, description } = req.body
+    try {
         const existingEmail = await checkEmail(email)
-        //console.log(existingEmail.rows[0])
-        //console.log(user.email, existingEmail.rows[0].email)
         const existingPhone = await checkPhone(telephone)
-        console.log(existingPhone.rows[0])
 
-        if(existingEmail.rows[0] && (user.email !== existingEmail.rows[0].email)) return res.status(409).send("Email já cadastrado!");
-        if(existingPhone.rows[0] && (user.telephone !== existingPhone.rows[0].telephone)) return res.status(409).send("Telefone já cadastrado!");
+        if (existingEmail.rows[0] && (user.email !== existingEmail.rows[0].email)) return res.status(409).send("Email já cadastrado!");
+        if (existingPhone.rows[0] && (user.telephone !== existingPhone.rows[0].telephone)) return res.status(409).send("Telefone já cadastrado!");
 
         const update = await setUser(user, name, email, telephone, picture, description)
 

@@ -7,7 +7,7 @@ import { validateAuth } from "../middlewares/validateAuth.js"
 const userRouter = Router()
 
 //faz o cadastro
-userRouter.post("/signup",validateSchema(schemaSignup), register)
+userRouter.post("/signup", validateSchema(schemaSignup), register)
 //faz o login
 userRouter.post("/signin", validateSchema(schemaSignin), login)
 //exibe as informações do usuário
