@@ -1,4 +1,4 @@
-import { checkModel, createModel } from "../repository/model.repository.js";
+import { checkModel, createModel, getModels } from "../repository/model.repository.js";
 
 export async function postModel(req, res){
     const {name, picture, description} = req.body
@@ -15,7 +15,8 @@ export async function postModel(req, res){
 
 export async function showModels(req, res){
     try{
-        res.send("showModels")
+        const models = await getModels() 
+        res.send(models.rows)
     } catch (err) {
         res.status(500).send(err.message);
     }
