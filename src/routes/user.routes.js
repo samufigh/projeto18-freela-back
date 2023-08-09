@@ -1,14 +1,16 @@
 import { Router } from "express"
 import { validateSchema } from "../middlewares/validateSchema.js"
 import { schemaSignin, schemaSignup } from "../schemas/user.schemas.js"
-import { login, register } from "../controllers/user.controllers.js"
+import { infoUser, login, register } from "../controllers/user.controllers.js"
+import { validateAuth } from "../middlewares/validateAuth.js"
 
 const userRouter = Router()
 
 //faz o cadastro
 userRouter.post("/signup",validateSchema(schemaSignup), register)
-
 //faz o login
 userRouter.post("/signin", validateSchema(schemaSignin), login)
+//atualiza informações do usuário
+userRouter.put("/user/info", validateAuth, infoUser)
 
 export default userRouter

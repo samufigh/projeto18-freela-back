@@ -27,16 +27,23 @@ export async function login(req, res) {
             const token = uuid()
 
             await deleteSession(user)
-
             await createSession(user, token)
 
-            res.send({token})
+            res.send({ token })
 
         } else if (!user.rows[0]) {
             return res.status(401).send("usuário não encontrado (email incorreto)");
         } else {
             return res.status(401).send("usuário não encontrado (senha incorreta)");
         }
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+}
+
+export async function infoUser(req, res){
+    try{
+        res.send("infoUser")
     } catch (err) {
         res.status(500).send(err.message);
     }
