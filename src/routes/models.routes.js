@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { validateAuth } from "../middlewares/validateAuth.js"
-import { infoModel, postModel, showModels, showMyModels } from "../controllers/model.controllers.js"
+import { infoModel, postModel, setAvailable, showModels, showMyModels } from "../controllers/model.controllers.js"
 import { validateSchema } from "../middlewares/validateSchema.js"
 import { schemaModel } from "../schemas/model.schemas.js"
 
@@ -14,5 +14,7 @@ modelRouter.get("/models", validateAuth, showModels)
 modelRouter.get("/models/me", validateAuth, showMyModels)
 //mostra o modelo selecionado
 modelRouter.get("/models/:id", validateAuth, infoModel)
+//atualiza a disponibilidade do modelo
+modelRouter.put("/models/:id", validateAuth, setAvailable)
 
 export default modelRouter

@@ -22,3 +22,8 @@ export function getModel(id){
 export function getMyModels(user){
     return db.query(`SELECT * FROM models WHERE "userId"=$1`, [user.id])
 }
+
+export function setModel(id, available){
+    if(available===true) return db.query(`UPDATE models SET available=false WHERE id=$1;`, [id])
+    if(available===false) return db.query(`UPDATE models SET available=true WHERE id=$1;`, [id])
+}

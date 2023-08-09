@@ -1,4 +1,4 @@
-import { checkModel, createModel, getModel, getModels, getMyModels } from "../repository/model.repository.js";
+import { checkModel, createModel, getModel, getModels, getMyModels, setModel } from "../repository/model.repository.js";
 
 export async function postModel(req, res){
     const {name, picture, description} = req.body
@@ -38,6 +38,18 @@ export async function showMyModels(req, res){
     try{
         const myModels = await getMyModels(user)
         res.send(myModels.rows)
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+}
+
+export async function setAvailable(req, res){
+    const {id} = req.params
+    const {available} = req.body
+    console.log(available)
+    try{
+        const model = await setModel(id, available)
+        res.send("Atualizado")
     } catch (err) {
         res.status(500).send(err.message);
     }
