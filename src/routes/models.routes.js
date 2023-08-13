@@ -13,7 +13,7 @@ modelRouter.get("/models", showModels)
 //mostra os modelos do usuario logado
 modelRouter.get("/models/me", validateAuth, showMyModels)
 //mostra o modelo selecionado
-modelRouter.get("/models/:id", validateAuth, infoModel)
+modelRouter.get("/models/:id", infoModel)
 //atualiza a disponibilidade do modelo
 modelRouter.put("/models/:id", validateAuth, setAvailable)
 
