@@ -9,7 +9,7 @@ const modelRouter = Router()
 //cria um modelo
 modelRouter.post("/model", validateAuth, validateSchema(schemaModel), postModel)
 //mostra todos os modelos
-modelRouter.get("/models", validateAuth, showModels)
+modelRouter.get("/models", showModels)
 //mostra os modelos do usuario logado
 modelRouter.get("/models/me", validateAuth, showMyModels)
 //mostra o modelo selecionado
