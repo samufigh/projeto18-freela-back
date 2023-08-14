@@ -1,9 +1,9 @@
 import { db } from "../database/database.connection.js"
 
-export function createModel(name, picture, description, user) {
+export function createModel(name, picture, pictureUserPet, description, user) {
     db.query(`
-        INSERT INTO models (name, description, picture, "userId") 
-        VALUES ($1, $2, $3, $4);`, [name, description, picture, user.id])
+        INSERT INTO models (name, description, picture, "pictureUserPet", "userId") 
+        VALUES ($1, $2, $3, $4, $5);`, [name, description, picture, pictureUserPet, user.id])
 }
 
 export function checkModel(name) {
@@ -16,11 +16,14 @@ export function getModels() {
 }
 
 export function getModel(id) {
-    return db.query(`SELECT * FROM models WHERE id=$1;`, [id])
+    return db.query(`SELECT models.*, users.name AS "userName", users.cpf, users.picture AS "userPicture", users.telephone, users.email, users.description AS "userDescription"
+    FROM models
+    JOIN users ON models."userId" = users.id
+    AND models.id = $1;`, [id])
 }
 
 export function getMyModels(user) {
-    return db.query(`SELECT * FROM models WHERE "userId"=$1`, [user.id])
+    return db.query(`SELECT * FROM models WHERE "userId"=$1;`, [user.id])
 }
 
 export function setModel(id, available) {
