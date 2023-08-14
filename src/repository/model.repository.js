@@ -1,6 +1,6 @@
 import { db } from "../database/database.connection.js"
 
-export function createModel(name, picture, pictureUserPet, description, user) {
+export function createModel(name, description, picture, pictureUserPet, user) {
     db.query(`
         INSERT INTO models (name, description, picture, "pictureUserPet", "userId") 
         VALUES ($1, $2, $3, $4, $5);`, [name, description, picture, pictureUserPet, user.id])

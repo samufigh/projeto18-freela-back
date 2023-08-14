@@ -3,10 +3,12 @@ import { checkModel, createModel, getModel, getModels, getMyModels, setModel } f
 export async function postModel(req, res) {
     const { name, picture, description, pictureUserPet } = req.body
     const { user } = res.locals
+    console.log(description)
     try {
         const existingModel = await checkModel(name)
         if (existingModel.rowCount > 0) return res.status(409).send({ message: "Você já cadastrou um pet com esse nome!" })
-        await createModel(name, picture, description, pictureUserPet, user)
+        await createModel(name, description, picture, pictureUserPet, user)
+
         res.status(200).send("Seu pet foi adicionado!")
     } catch (err) {
         res.status(500).send(err.message);
