@@ -1,18 +1,14 @@
-import bcrypt from "bcrypt"
-import { v4 as uuid } from "uuid"
-import { checkEmail, checkInfo, checkPhone, createSession, deleteSession, getInfoUser, getUserByEmail, registerUser, setUser } from "../repository/user.repository.js"
+import { infoUserService, loginService, registerService, updateUserService } from "../services/user.service.js"
 
 export async function register(req, res) {
-    const { name, cpf, telephone, email, password, confirmPassword } = req.body
-    const hash = bcrypt.hashSync(password, 10)
     try {
-        if (confirmPassword !== password) return res.status(422).send("As senhas não coincidem")
-        const existingEmail = await checkInfo(email, cpf, telephone)
-        if (existingEmail.rowCount > 0) return res.status(409).send("Email, CPF ou Telefone já cadastrado")
+        const response = await registerService(req.body)
 
-        await registerUser(name, cpf, telephone, email, hash)
+        if(response === 422) res.status(422).send("As senhas não coincidem")
 
-        res.sendStatus(201)
+        else if (response === 409) res.status(409).send("Email, CPF ou Telefone já cadastrado")
+
+        else res.sendStatus(201)
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -21,21 +17,12 @@ export async function register(req, res) {
 export async function login(req, res) {
     const { email, password } = req.body
     try {
-        const user = await getUserByEmail(email)
+        const response = await loginService(email, password)
 
-        if (user.rows[0] && bcrypt.compareSync(password, user.rows[0].password)) {
-            const token = uuid()
+        if(response === 401) res.status(401).send("usuário não encontrado (email incorreto)");
+        else if (response === 402) res.status(401).send("usuário não encontrado (senha incorreta)");
 
-            await deleteSession(user)
-            await createSession(user, token)
-
-            res.send({ token })
-
-        } else if (!user.rows[0]) {
-            return res.status(401).send("usuário não encontrado (email incorreto)");
-        } else {
-            return res.status(401).send("usuário não encontrado (senha incorreta)");
-        }
+        else res.send(response)
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -44,8 +31,8 @@ export async function login(req, res) {
 export async function infoUser(req, res) {
     const { user } = res.locals
     try {
-        const info = await getInfoUser(user)
-        res.send(info.rows[0])
+        const response = await infoUserService(user)
+        res.send(response)
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -53,17 +40,13 @@ export async function infoUser(req, res) {
 
 export async function updateUser(req, res) {
     const { user } = res.locals
-    const { name, email, telephone, picture, description } = req.body
     try {
-        const existingEmail = await checkEmail(email)
-        const existingPhone = await checkPhone(telephone)
+        const response = await updateUserService(user, req.body)
 
-        if (existingEmail.rows[0] && (user.email !== existingEmail.rows[0].email)) return res.status(409).send("Email já cadastrado!");
-        if (existingPhone.rows[0] && (user.telephone !== existingPhone.rows[0].telephone)) return res.status(409).send("Telefone já cadastrado!");
+        if (response === "Email já cadastrado!" || response === "Telefone já cadastrado!") 
+        res.status(409).send(response)
 
-        const update = await setUser(user, name, email, telephone, picture, description)
-
-        res.send("Atualizado")
+        else res.send("Atualizado")
     } catch (err) {
         res.status(500).send(err.message);
     }
