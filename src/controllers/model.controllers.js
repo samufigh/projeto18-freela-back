@@ -1,58 +1,60 @@
-import { checkModel, createModel, getModel, getModels, getMyModels, setModel } from "../repository/model.repository.js";
+import {
+  infoModelService,
+  postModelService,
+  setAvailableService,
+  showModelsServicce,
+  showMyModelsService,
+} from '../services/model.service.js';
 
 export async function postModel(req, res) {
-    const { name, picture, description, pictureUserPet } = req.body
-    const { user } = res.locals
-    console.log(description)
-    try {
-        const existingModel = await checkModel(name)
-        if (existingModel.rowCount > 0) return res.status(409).send({ message: "Você já cadastrou um pet com esse nome!" })
-        await createModel(name, description, picture, pictureUserPet, user)
+  const { user } = res.locals;
+  try {
+    const response = await postModelService(user, req.body);
 
-        res.status(200).send("Seu pet foi adicionado!")
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
+    if (response === 409) res.status(409).send({ message: 'Você já cadastrou um pet com esse nome!' });
+    else res.status(200).send('Seu pet foi adicionado!');
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 }
 
 export async function showModels(req, res) {
-    try {
-        const models = await getModels()
-        res.send(models.rows)
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
+  try {
+    const models = await showModelsServicce();
+    res.send(models);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 }
 
 export async function infoModel(req, res) {
-    const { id } = req.params
-    try {
-        const model = await getModel(id)
-        if (!model.rows[0]) return res.status(404).send({ message: "pet não existe" })
-        console.log(model.rows[0])
-        res.send(model.rows[0])
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
+  const { id } = req.params;
+  try {
+    const response = await infoModelService(id);
+    if (response === 404) res.status(404).send({ message: 'pet não existe' });
+    else res.send(response);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 }
 
 export async function showMyModels(req, res) {
-    const { user } = res.locals
-    try {
-        const myModels = await getMyModels(user)
-        res.send(myModels.rows)
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
+  const { user } = res.locals;
+  try {
+    const response = await showMyModelsService(user);
+    res.send(response);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 }
 
 export async function setAvailable(req, res) {
-    const { id } = req.params
-    const { available } = req.body
-    try {
-        const model = await setModel(id, available)
-        res.send("Atualizado")
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
+  const { id } = req.params;
+  const { available } = req.body;
+  try {
+    await setAvailableService(id, available);
+    res.send('Atualizado');
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 }
